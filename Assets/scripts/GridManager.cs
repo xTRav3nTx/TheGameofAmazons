@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GridManager : MonoBehaviour
 {
@@ -11,11 +12,12 @@ public class GridManager : MonoBehaviour
     [SerializeField] private float dragOffset;
 
     public bool isWhiteTurn;
-    private bool isPlayerAI = true;
     private bool readytoFire = false;
 
     public int whiteTeam = 0;
     public int blackTeam = 1;
+
+    private bool gameover;
 
     public List<Vector2Int> availableMoves = new List<Vector2Int>();
     public List<Vector2Int> availableFires = new List<Vector2Int>();
@@ -47,9 +49,15 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Material tilematerialWhite;
     [SerializeField] private Material tilematerialBlack;
 
+    [SerializeField] private Text[] winner_text;
+
     void Start()
     {
-        if(isPlayerAI)
+        gameover = false;
+        winner_text[0].gameObject.SetActive(false);
+        winner_text[1].gameObject.SetActive(false);
+
+        if (Main_Menu.isPlayerAI)
         {
             aiplayer = Instantiate(AIPrefab, transform).GetComponent<AI>();
         }
@@ -70,12 +78,15 @@ public class GridManager : MonoBehaviour
             _cam = Camera.main;
             return;
         }
-        
-        hoverTile();
+        if(!gameover)
+        {
+            hoverTile();
+        }
+       
     }
     private void FixedUpdate()
     {
-        if(isPlayerAI)
+        if(Main_Menu.isPlayerAI)
         {
             if (!isWhiteTurn)
             {
@@ -328,6 +339,7 @@ public class GridManager : MonoBehaviour
     {
         GameObject tile = new GameObject(string.Format("({0},{1})", x, y));
         tile.transform.parent = _boardcontainer.transform;
+        tile.tag = "Tile";
 
         Mesh mesh = new Mesh();
         tile.AddComponent<MeshFilter>().mesh = mesh;
@@ -540,25 +552,25 @@ public class GridManager : MonoBehaviour
         
         if (whitecount == 3)
         {
-            Debug.Log("Black Wins");
-            isWhiteTurn = true;
+            winner_text[1].gameObject.SetActive(true);
             destroyStuffonWin();
             isWhiteTurn = true;
+            gameover = true;
             StopAllCoroutines();
         }
         if (blackcount == 3)
         {
-            Debug.Log("White Wins");
-            isWhiteTurn = false;
+            winner_text[0].gameObject.SetActive(true);
             destroyStuffonWin();
             isWhiteTurn = true;
+            gameover = true;
             StopAllCoroutines();
         }
     }
     //mouse click down for movement
     void OnMouseDown(int x, int y)
     {
-        if(!isPlayerAI)
+        if(!Main_Menu.isPlayerAI)
         {
             if (Input.GetMouseButtonDown(0))
             {
