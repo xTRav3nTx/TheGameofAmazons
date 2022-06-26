@@ -8,4 +8,6 @@ amazon just traveled, into or across the starting square if desired). An arrow, 
 or an amazon of either color stands. The square where the arrow lands is marked to show that it can no longer be used. The last player to be able to make a 
 move wins. Draws are impossible.
 
+First Unity project. Basic board game in 2.5D. All files to open in Unity are located in this repository.
+
 To view C# code go to Assets->scripts
